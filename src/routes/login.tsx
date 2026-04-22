@@ -70,32 +70,6 @@ function LoginPage() {
             <Stat value="48+" label="Event Aktif" />
             <Stat value="99%" label="Uptime" />
           </div>
-
-          {/* Flow guide */}
-          <div className="mt-10 rounded-2xl border border-primary/30 bg-card/60 p-5 backdrop-blur-xl">
-            <div className="mb-4 flex items-center gap-2">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-primary" />
-              <span className="text-xs font-bold tracking-widest text-primary">ALUR PEMESANAN</span>
-            </div>
-            <ol className="grid grid-cols-5 gap-2 text-[11px]">
-              {[
-                { n: "1", t: "LOGIN", d: "Masuk akun" },
-                { n: "2", t: "EXPLORE", d: "Pilih event" },
-                { n: "3", t: "SEAT", d: "Pilih kursi" },
-                { n: "4", t: "CHECKOUT", d: "Bayar 5 menit" },
-                { n: "5", t: "E-TICKET", d: "QR Code siap" },
-              ].map((s, i) => (
-                <li key={s.n} className="relative">
-                  <div className={`flex h-9 w-9 items-center justify-center rounded-lg font-display font-bold ${i === 0 ? "bg-primary text-primary-foreground shadow-[var(--shadow-glow)]" : "bg-muted text-muted-foreground"}`}>
-                    {s.n}
-                  </div>
-                  <div className="mt-2 font-display font-extrabold tracking-tight">{s.t}</div>
-                  <div className="text-muted-foreground">{s.d}</div>
-                </li>
-              ))}
-            </ol>
-          </div>
-
           <p className="mt-10 text-xs text-muted-foreground">© 2026 TicketWave. All rights reserved.</p>
         </div>
 
