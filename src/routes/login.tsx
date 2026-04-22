@@ -133,6 +133,10 @@ function LoginPage() {
                   {tab === "login" ? "Daftar Sekarang" : "Masuk"}
                 </button>
               </p>
+              <p className="text-center text-xs text-muted-foreground">
+                Pengelola platform?{" "}
+                <Link to="/admin/login" className="font-bold text-primary hover:underline">Masuk sebagai Admin</Link>
+              </p>
             </form>
           </div>
         </div>
