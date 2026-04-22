@@ -13,8 +13,8 @@ import { Route as MyTicketsRouteImport } from './routes/my-tickets'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as EventEventIdRouteImport } from './routes/event.$eventId'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as EventEventIdRouteImport } from './routes/event.$eventId'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 
 const MyTicketsRoute = MyTicketsRouteImport.update({
@@ -37,14 +37,14 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EventEventIdRoute = EventEventIdRouteImport.update({
-  id: '/event/$eventId',
-  path: '/event/$eventId',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventEventIdRoute = EventEventIdRouteImport.update({
+  id: '/event/$eventId',
+  path: '/event/$eventId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
@@ -58,8 +58,8 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/my-tickets': typeof MyTicketsRoute
-  '/event/$eventId': typeof EventEventIdRoute
   '/admin/login': typeof AdminLoginRoute
+  '/event/$eventId': typeof EventEventIdRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
@@ -67,8 +67,8 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/my-tickets': typeof MyTicketsRoute
-  '/event/$eventId': typeof EventEventIdRoute
   '/admin/login': typeof AdminLoginRoute
+  '/event/$eventId': typeof EventEventIdRoute
   '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
@@ -77,23 +77,37 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/login': typeof LoginRoute
   '/my-tickets': typeof MyTicketsRoute
-  '/event/$eventId': typeof EventEventIdRoute
   '/admin/login': typeof AdminLoginRoute
+  '/event/$eventId': typeof EventEventIdRoute
   '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/checkout' | '/login' | '/my-tickets' | '/event/$eventId' | '/admin/login' | '/admin/'
+  fullPaths:
+    | '/'
+    | '/checkout'
+    | '/login'
+    | '/my-tickets'
+    | '/admin/login'
+    | '/event/$eventId'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/checkout' | '/login' | '/my-tickets' | '/event/$eventId' | '/admin/login' | '/admin'
+  to:
+    | '/'
+    | '/checkout'
+    | '/login'
+    | '/my-tickets'
+    | '/admin/login'
+    | '/event/$eventId'
+    | '/admin'
   id:
     | '__root__'
     | '/'
     | '/checkout'
     | '/login'
     | '/my-tickets'
-    | '/event/$eventId'
     | '/admin/login'
+    | '/event/$eventId'
     | '/admin/'
   fileRoutesById: FileRoutesById
 }
@@ -102,8 +116,8 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRoute
   LoginRoute: typeof LoginRoute
   MyTicketsRoute: typeof MyTicketsRoute
-  EventEventIdRoute: typeof EventEventIdRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  EventEventIdRoute: typeof EventEventIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -137,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/event/$eventId': {
       id: '/event/$eventId'
       path: '/event/$eventId'
@@ -151,13 +172,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/admin/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -166,8 +180,8 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRoute,
   LoginRoute: LoginRoute,
   MyTicketsRoute: MyTicketsRoute,
-  EventEventIdRoute: EventEventIdRoute,
   AdminLoginRoute: AdminLoginRoute,
+  EventEventIdRoute: EventEventIdRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport
