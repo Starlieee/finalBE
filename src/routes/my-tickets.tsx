@@ -4,7 +4,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { X, Calendar, Ticket as TicketIcon } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { getUser, getTickets, type Ticket } from "@/lib/auth";
-import { EVENTS, formatIDR } from "@/lib/mockData";
+import { formatIDR, getEventById } from "@/lib/mockData";
 
 export const Route = createFileRoute("/my-tickets")({
   beforeLoad: () => {
