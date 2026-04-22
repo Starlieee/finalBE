@@ -20,6 +20,37 @@ export const EVENTS: EventItem[] = [
   { id: "voltage-nights", title: "Voltage Nights", artist: "DJ Kairo", genre: "EDM", date: "16 Aug 2026", venue: "Allianz Stadium", priceFrom: 850000, rating: 9.3, poster: "linear-gradient(135deg,#7c3aed,#ec4899,#f59e0b)", accent: "#a855f7" },
 ];
 
+const CUSTOM_EVENTS_KEY = "tw_custom_events";
+
+export function getCustomEvents(): EventItem[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(CUSTOM_EVENTS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function addCustomEvent(ev: EventItem) {
+  const all = getCustomEvents();
+  all.unshift(ev);
+  localStorage.setItem(CUSTOM_EVENTS_KEY, JSON.stringify(all));
+}
+
+export function deleteCustomEvent(id: string) {
+  const all = getCustomEvents().filter((e) => e.id !== id);
+  localStorage.setItem(CUSTOM_EVENTS_KEY, JSON.stringify(all));
+}
+
+export function getAllEvents(): EventItem[] {
+  return [...getCustomEvents(), ...EVENTS];
+}
+
+export function getEventById(id: string): EventItem | undefined {
+  return getAllEvents().find((e) => e.id === id);
+}
+
 export const ROWS = ["A", "B", "C", "D", "E", "F"];
 export const COLS = 10;
 
