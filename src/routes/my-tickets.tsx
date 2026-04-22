@@ -4,7 +4,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { X, Calendar, Ticket as TicketIcon } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { getUser, getTickets, type Ticket } from "@/lib/auth";
-import { EVENTS, formatIDR } from "@/lib/mockData";
+import { formatIDR, getEventById } from "@/lib/mockData";
 
 export const Route = createFileRoute("/my-tickets")({
   beforeLoad: () => {
@@ -46,7 +46,7 @@ function MyTicketsPage() {
         ) : (
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {tickets.map((t) => {
-              const ev = EVENTS.find((e) => e.id === t.eventId);
+              const ev = getEventById(t.eventId);
               return (
                 <button key={t.id} onClick={() => setActive(t)} className="group relative overflow-hidden rounded-2xl border border-border bg-card text-left transition-all hover:border-primary/60 hover:shadow-[var(--shadow-glow)]">
                   <div className="h-32 relative" style={{ background: ev?.poster }}>
@@ -80,7 +80,7 @@ function MyTicketsPage() {
 }
 
 function ETicketModal({ ticket, onClose }: { ticket: Ticket; onClose: () => void }) {
-  const ev = EVENTS.find((e) => e.id === ticket.eventId);
+  const ev = getEventById(ticket.eventId);
   const user = getUser();
   const qrValue = JSON.stringify({ id: ticket.id, seat: ticket.seat, ev: ticket.eventId, u: ticket.user });
 

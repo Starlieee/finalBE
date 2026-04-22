@@ -1,8 +1,8 @@
-import { createFileRoute, redirect, useNavigate, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, redirect, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Calendar, MapPin, Star, ArrowRight, Info } from "lucide-react";
+import { Calendar, MapPin, Star, ArrowRight } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
-import { EVENTS, ROWS, COLS, getSeatMap, seatPrice, formatIDR, type SeatStatus } from "@/lib/mockData";
+import { ROWS, COLS, getSeatMap, seatPrice, formatIDR, getEventById, type SeatStatus, type EventItem } from "@/lib/mockData";
 import { getUser } from "@/lib/auth";
 
 export const Route = createFileRoute("/event/$eventId")({
@@ -11,37 +11,41 @@ export const Route = createFileRoute("/event/$eventId")({
       throw redirect({ to: "/login" });
     }
   },
-  loader: ({ params }) => {
-    const ev = EVENTS.find((e) => e.id === params.eventId);
-    if (!ev) throw notFound();
-    return { ev };
-  },
-  head: ({ loaderData }) => ({
+  head: () => ({
     meta: [
-      { title: `${loaderData?.ev.title ?? "Event"} — TicketWave` },
-      { name: "description", content: `Pesan tiket ${loaderData?.ev.title} di TicketWave.` },
+      { title: `Detail Event — TicketWave` },
+      { name: "description", content: `Pesan tiket konser di TicketWave.` },
     ],
   }),
-  notFoundComponent: () => (
-    <div className="grid min-h-screen place-items-center">
-      <div className="text-center">
-        <h1 className="font-display text-4xl font-bold">Event tidak ditemukan</h1>
-        <Link to="/" className="mt-4 inline-block text-primary hover:underline">Kembali ke Explore</Link>
-      </div>
-    </div>
-  ),
   component: EventDetail,
 });
 
 function EventDetail() {
-  const { ev } = Route.useLoaderData();
+  const { eventId } = Route.useParams();
   const navigate = useNavigate();
+  const [ev, setEv] = useState<EventItem | null>(null);
   const [seats, setSeats] = useState<Record<string, SeatStatus>>({});
   const [selected, setSelected] = useState<string | null>(null);
 
   useEffect(() => {
-    setSeats(getSeatMap(ev.id));
-  }, [ev.id]);
+    const found = getEventById(eventId);
+    setEv(found ?? null);
+    if (found) setSeats(getSeatMap(found.id));
+  }, [eventId]);
+
+  if (!ev) {
+    return (
+      <>
+        <Navbar />
+        <div className="grid min-h-[60vh] place-items-center">
+          <div className="text-center">
+            <h1 className="font-display text-4xl font-bold">Event tidak ditemukan</h1>
+            <Link to="/" className="mt-4 inline-block text-primary hover:underline">Kembali ke Explore</Link>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   const handlePick = (id: string) => {
     if (seats[id] !== "available") return;

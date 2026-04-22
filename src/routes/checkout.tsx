@@ -2,7 +2,7 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { Clock, AlertTriangle, Wallet, Building2, CheckCircle2 } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
-import { EVENTS, formatIDR } from "@/lib/mockData";
+import { formatIDR, getEventById } from "@/lib/mockData";
 import { getUser, addTicket } from "@/lib/auth";
 
 type CheckoutData = { eventId: string; seat: string; price: number; expiresAt: number };
@@ -54,7 +54,7 @@ function CheckoutPage() {
     }
   }, [expired, data, navigate]);
 
-  const ev = useMemo(() => (data ? EVENTS.find((e) => e.id === data.eventId) : null), [data]);
+  const ev = useMemo(() => (data ? getEventById(data.eventId) : null), [data]);
 
   if (!data || !ev) return null;
 
