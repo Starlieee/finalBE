@@ -1,8 +1,8 @@
 import { createFileRoute, redirect, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search, Calendar, MapPin, Star, ArrowRight } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
-import { EVENTS, formatIDR } from "@/lib/mockData";
+import { EVENTS, formatIDR, getAllEvents, type EventItem } from "@/lib/mockData";
 import { getUser } from "@/lib/auth";
 
 export const Route = createFileRoute("/")({
@@ -22,9 +22,15 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   const [q, setQ] = useState("");
+  const [events, setEvents] = useState<EventItem[]>(EVENTS);
+
+  useEffect(() => {
+    setEvents(getAllEvents());
+  }, []);
+
   const filtered = useMemo(
-    () => EVENTS.filter((e) => (e.title + e.artist + e.genre).toLowerCase().includes(q.toLowerCase())),
-    [q]
+    () => events.filter((e) => (e.title + e.artist + e.genre).toLowerCase().includes(q.toLowerCase())),
+    [q, events]
   );
 
   return (
