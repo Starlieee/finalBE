@@ -54,7 +54,7 @@ function CheckoutPage() {
     }
   }, [expired, data, navigate]);
 
-  const ev = useMemo(() => (data ? EVENTS.find((e) => e.id === data.eventId) : null), [data]);
+  const ev = useMemo(() => (data ? getEventById(data.eventId) : null), [data]);
 
   if (!data || !ev) return null;
 
