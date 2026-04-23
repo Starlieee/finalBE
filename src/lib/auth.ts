@@ -59,8 +59,8 @@ const AKEY = "tw_admin";
 
 // Hardcoded credentials (demo only — frontend simulation)
 export const ADMIN_CREDENTIALS = [
-  { email: "admin@ticketwave.id", password: "admin123", name: "Admin TicketWave", role: "SUPER ADMIN" as const },
-  { email: "staff@ticketwave.id", password: "staff123", name: "Staff TicketWave", role: "ADMIN" as const },
+  { email: "pokoknyaadmin@gmail.com", password: "admin123", name: "Kiaa", role: "SUPER ADMIN" as const },
+  { email: "pokoknyaadmin1@gmail.com", password: "admin123", name: "Starlie", role: "ADMIN" as const },
 ];
 
 export function getAdmin(): Admin | null {

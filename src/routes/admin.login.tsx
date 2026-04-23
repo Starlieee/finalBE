@@ -54,7 +54,7 @@ function AdminLoginPage() {
 
         <form onSubmit={submit} className="mt-6 space-y-4">
           <Field label="EMAIL ADMIN" icon={<Mail className="h-4 w-4" />}>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="admin@ticketwave.id" className="w-full bg-transparent outline-none placeholder:text-muted-foreground/60" />
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email " className="w-full bg-transparent outline-none placeholder:text-muted-foreground/60" />
           </Field>
           <Field label="PASSWORD" icon={<Lock className="h-4 w-4" />}>
             <input type={showPwd ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" className="w-full bg-transparent outline-none placeholder:text-muted-foreground/60" />
@@ -66,13 +66,13 @@ function AdminLoginPage() {
           {error && <p className="text-sm text-destructive">{error}</p>}
 
           <button type="submit" className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3.5 text-sm font-bold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:scale-[1.01]">
-            Masuk Admin <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            Login <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </button>
         </form>
 
         <div className="mt-6 rounded-xl border border-border bg-muted/40 p-4 text-xs">
           <p className="font-bold tracking-widest text-muted-foreground">DEMO CREDENTIALS</p>
-          <p className="mt-2"><span className="text-muted-foreground">Email:</span> <span className="font-mono text-primary">admin@ticketwave.id</span></p>
+          <p className="mt-2"><span className="text-muted-foreground">Email:</span> <span className="font-mono text-primary">pokoknyaadmin@gmail.com</span></p>
           <p><span className="text-muted-foreground">Password:</span> <span className="font-mono text-primary">admin123</span></p>
         </div>
 
