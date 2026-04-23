@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TicketWave – Masuk</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0a0a0f;
+      --panel:     #111118;
+      --border:    rgba(255,255,255,0.08);
+      --accent:    #f0c040;
+      --accent2:   #ff4d6d;
+      --text:      #e8e8f0;
+      --muted:     #6b6b80;
+      --input-bg:  #1a1a24;
+      --radius:    14px;
+      --transition: 0.25s cubic-bezier(.4,0,.2,1);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* ── Background Mesh ── */
+    .bg-mesh {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 60% 50% at 15% 20%, rgba(240,192,64,.12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 85% 80%, rgba(255,77,109,.10) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 50% 50%, rgba(80,60,180,.08) 0%, transparent 70%);
+    }
+
+    .bg-grid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+
+    /* ── Layout ── */
+    .page {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      height: 100vh;
+    }
+
+    /* ── Left Panel – Branding ── */
+    .brand-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px 52px;
+      border-right: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: .08em;
+      color: var(--accent);
+    }
+
+    .brand-logo span { color: var(--text); }
+
+    .brand-hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .brand-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 6px 14px;
+      border: 1px solid rgba(240,192,64,.3);
+      border-radius: 999px;
+      width: fit-content;
+    }
+
+    .brand-tag::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      animation: pulse-dot 1.6s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:.4; transform:scale(.7); }
+    }
+
+    .brand-headline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 4.2rem;
+      line-height: .95;
+      letter-spacing: .02em;
+      color: var(--text);
+    }
+
+    .brand-headline em {
+      font-style: normal;
+      color: var(--accent);
+    }
+
+    .brand-desc {
+      color: var(--muted);
+      font-size: .95rem;
+      line-height: 1.7;
+      max-width: 340px;
+    }
+
+    .brand-stats {
+      display: flex;
+      gap: 32px;
+    }
+
+    .stat { display: flex; flex-direction: column; gap: 4px; }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      color: var(--text);
+      letter-spacing: .04em;
+    }
+    .stat-num span { color: var(--accent); }
+    .stat-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .1em; }
+
+    .brand-footer {
+      font-size: .75rem;
+      color: var(--muted);
+    }
+
+    /* ── Decorative Ticket Shape ── */
+    .deco-ticket {
+      position: absolute;
+      right: -60px; top: 50%;
+      transform: translateY(-50%);
+      width: 220px; height: 300px;
+      border: 1px solid rgba(240,192,64,.15);
+      border-radius: 20px;
+      background: rgba(240,192,64,.03);
+      pointer-events: none;
+      animation: float-ticket 6s ease-in-out infinite;
+    }
+
+    .deco-ticket::after {
+      content: '';
+      position: absolute;
+      left: -14px; top: 50%; transform: translateY(-50%);
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: var(--bg);
+      border: 1px solid rgba(240,192,64,.15);
+    }
+
+    @keyframes float-ticket {
+      0%,100% { transform: translateY(-50%) rotate(-3deg); }
+      50% { transform: translateY(-54%) rotate(-1deg); }
+    }
+
+    /* ── Right Panel – Form ── */
+    .form-panel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 52px;
+      overflow-y: auto;
+    }
+
+    .form-card {
+      width: 100%;
+      max-width: 420px;
+      animation: slide-up .5s cubic-bezier(.4,0,.2,1) both;
+    }
+
+    @keyframes slide-up {
+      from { opacity:0; transform:translateY(28px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .form-header { margin-bottom: 36px; }
+
+    .form-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.4rem;
+      letter-spacing: .04em;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+
+    .form-subtitle { color: var(--muted); font-size: .9rem; }
+
+    /* ── Tab Switcher ── */
+    .tab-switcher {
+      display: flex;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 32px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 9px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .88rem;
+      font-weight: 500;
+      border-radius: 7px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #0a0a0f;
+      font-weight: 600;
+    }
+
+    /* ── Forms ── */
+    .form-view { display: none; }
+    .form-view.active { display: block; animation: fade-in .3s ease; }
+
+    @keyframes fade-in { from{opacity:0} to{opacity:1} }
+
+    .field { margin-bottom: 18px; }
+
+    .field label {
+      display: block;
+      font-size: .8rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap .icon {
+      position: absolute;
+      left: 14px; top: 50%; transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 1rem;
+      pointer-events: none;
+      transition: color var(--transition);
+    }
+
+    .input-wrap input {
+      width: 100%;
+      padding: 13px 14px 13px 42px;
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .95rem;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+
+    .input-wrap input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(240,192,64,.12);
+    }
+
+    .input-wrap input:focus + .icon,
+    .input-wrap input:focus ~ .icon { color: var(--accent); }
+
+    .input-wrap input::placeholder { color: var(--muted); font-size: .88rem; }
+
+    /* password toggle */
+    .toggle-pw {
+      position: absolute;
+      right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: none;
+      color: var(--muted); cursor: pointer;
+      font-size: .9rem;
+      padding: 4px;
+      transition: color var(--transition);
+    }
+    .toggle-pw:hover { color: var(--text); }
+
+    /* ── Error / Success ── */
+    .field-error {
+      font-size: .78rem;
+      color: var(--accent2);
+      margin-top: 5px;
+      display: none;
+    }
+    .field.has-error input { border-color: var(--accent2); }
+    .field.has-error .field-error { display: block; }
+
+    /* ── Submit Button ── */
+    .btn-submit {
+      width: 100%;
+      padding: 15px;
+      margin-top: 8px;
+      background: var(--accent);
+      color: #0a0a0f;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .btn-submit:hover { background: #f8d050; transform: translateY(-1px); }
+    .btn-submit:active { transform: translateY(0); }
+
+    .btn-submit .btn-spinner {
+      display: none;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(0,0,0,.3);
+      border-top-color: #0a0a0f;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      margin: 0 auto;
+    }
+
+    .btn-submit.loading .btn-text { display: none; }
+    .btn-submit.loading .btn-spinner { display: block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Divider ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: .78rem;
+      margin: 22px 0;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1;
+      height: 1px; background: var(--border);
+    }
+
+    /* ── Alert Toast ── */
+    #toast {
+      position: fixed;
+      bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 22px;
+      font-size: .88rem;
+      color: var(--text);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .3s, transform .3s;
+      z-index: 999;
+      white-space: nowrap;
+    }
+    #toast.show {
+      opacity: 1; transform: translateX(-50%) translateY(0);
+    }
+    #toast.success { border-color: rgba(80,200,100,.35); color: #6fe084; }
+    #toast.error   { border-color: rgba(255,77,109,.35); color: var(--accent2); }
+
+    /* ── Floating Objects ── */
+    .floaties {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+    }
+
+    .floaty {
+      position: absolute;
+      opacity: 0;
+      will-change: transform, opacity;
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,.5));
+      animation: floaty-drift var(--dur, 14s) var(--delay, 0s) ease-in-out infinite;
+    }
+
+    /* each object gets unique position + size + timing */
+    .f1  { --dur:13s; --delay:0s;   --rx:-18deg; left:4%;  top:12%; width:72px; }
+    .f2  { --dur:16s; --delay:-4s;  --rx: 12deg; left:18%; top:68%; width:56px; }
+    .f3  { --dur:11s; --delay:-2s;  --rx:-22deg; left:72%; top:8%;  width:64px; }
+    .f4  { --dur:15s; --delay:-6s;  --rx: 20deg; left:88%; top:55%; width:52px; }
+    .f5  { --dur:12s; --delay:-1s;  --rx:-14deg; left:55%; top:80%; width:60px; }
+    .f6  { --dur:17s; --delay:-8s;  --rx: 8deg;  left:38%; top:5%;  width:48px; }
+    .f7  { --dur:10s; --delay:-3s;  --rx:-25deg; left:92%; top:20%; width:44px; }
+    .f8  { --dur:14s; --delay:-5s;  --rx: 16deg; left:8%;  top:88%; width:66px; }
+    .f9  { --dur:18s; --delay:-7s;  --rx:-10deg; left:62%; top:42%; width:50px; }
+    .f10 { --dur:13s; --delay:-9s;  --rx: 22deg; left:28%; top:30%; width:58px; }
+
+    @keyframes floaty-drift {
+      0%   { opacity: 0;   transform: translateY(0px)   rotate(var(--rx)) scale(.85); }
+      10%  { opacity: .55; }
+      50%  { opacity: .70; transform: translateY(-28px) rotate(calc(var(--rx) * -0.6)) scale(1); }
+      90%  { opacity: .55; }
+      100% { opacity: 0;   transform: translateY(0px)   rotate(var(--rx)) scale(.85); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 820px) {
+      .page { grid-template-columns: 1fr; }
+      .brand-panel { display: none; }
+      .form-panel { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-mesh"></div>
+<div class="bg-grid"></div>
+
+<!-- ── Floating Cinema Objects ── -->
+<div class="floaties">
+
+  <!-- 🍿 Popcorn 1 -->
+  <svg class="floaty f1" viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- bucket -->
+    <rect x="18" y="44" width="44" height="48" rx="5" fill="#e63950"/>
+    <rect x="18" y="44" width="14" height="48" rx="5" fill="#c42d40"/>
+    <rect x="32" y="44" width="15" height="48" fill="#f0c040"/>
+    <rect x="47" y="44" width="15" height="48" rx="5" fill="#e63950"/>
+    <!-- rim -->
+    <rect x="14" y="40" width="52" height="10" rx="5" fill="#ff6b80"/>
+    <!-- popcorn balls -->
+    <circle cx="24" cy="36" r="10" fill="#fff8e1"/>
+    <circle cx="40" cy="30" r="12" fill="#fffde7"/>
+    <circle cx="56" cy="36" r="10" fill="#fff8e1"/>
+    <circle cx="32" cy="22" r="9"  fill="#fffde7"/>
+    <circle cx="48" cy="22" r="9"  fill="#fff3cd"/>
+    <circle cx="40" cy="14" r="8"  fill="#fffde7"/>
+    <!-- shadow dots -->
+    <circle cx="24" cy="36" r="4" fill="#f0c040" opacity=".4"/>
+    <circle cx="56" cy="36" r="4" fill="#f0c040" opacity=".4"/>
+  </svg>
+
+  <!-- 🎟 Ticket 1 -->
+  <svg class="floaty f2" viewBox="0 0 100 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="2" width="96" height="44" rx="8" fill="#1a1a2e" stroke="#f0c040" stroke-width="2"/>
+    <!-- perforation hole left -->
+    <circle cx="28" cy="24" r="7" fill="#0a0a0f"/>
+    <!-- dashed line -->
+    <line x1="28" y1="8" x2="28" y2="40" stroke="#f0c040" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <!-- text lines -->
+    <rect x="38" y="13" width="40" height="5" rx="2" fill="#f0c040" opacity=".8"/>
+    <rect x="38" y="23" width="28" height="4" rx="2" fill="#6b6b80"/>
+    <rect x="38" y="31" width="20" height="4" rx="2" fill="#6b6b80"/>
+    <!-- star -->
+    <text x="8" y="28" font-size="14" fill="#f0c040">★</text>
+  </svg>
+
+  <!-- 🥤 Cola 1 -->
+  <svg class="floaty f3" viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- straw -->
+    <rect x="38" y="0" width="6" height="42" rx="3" fill="#ff4d6d"/>
+    <rect x="39" y="0" width="2" height="42" rx="1" fill="#ff8099" opacity=".6"/>
+    <!-- cup body -->
+    <path d="M8 30 L14 92 Q15 97 20 97 L40 97 Q45 97 46 92 L52 30 Z" fill="#1a1a2e" stroke="#444466" stroke-width="1.5"/>
+    <!-- cup highlight -->
+    <path d="M10 30 L15 85 Q16 90 20 90 L25 90 L19 30 Z" fill="white" opacity=".06"/>
+    <!-- lid -->
+    <path d="M5 28 Q5 22 30 22 Q55 22 55 28 L52 30 Q52 34 30 34 Q8 34 8 30 Z" fill="#2a2a44"/>
+    <ellipse cx="30" cy="23" rx="25" ry="5" fill="#333355"/>
+    <!-- straw hole -->
+    <ellipse cx="40" cy="23" rx="4" ry="2" fill="#111128"/>
+    <!-- logo on cup -->
+    <text x="18" y="65" font-size="11" font-weight="bold" fill="#f0c040" font-family="serif">TW</text>
+    <!-- bubbles -->
+    <circle cx="22" cy="50" r="2" fill="#f0c040" opacity=".2"/>
+    <circle cx="35" cy="42" r="1.5" fill="#f0c040" opacity=".2"/>
+    <circle cx="28" cy="58" r="1.5" fill="#f0c040" opacity=".2"/>
+  </svg>
+
+  <!-- 🍿 Popcorn 2 (smaller, different tilt) -->
+  <svg class="floaty f4" viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="18" y="44" width="44" height="48" rx="5" fill="#6c35de"/>
+    <rect x="18" y="44" width="14" height="48" rx="5" fill="#5428b5"/>
+    <rect x="32" y="44" width="15" height="48" fill="#9b59b6"/>
+    <rect x="47" y="44" width="15" height="48" rx="5" fill="#6c35de"/>
+    <rect x="14" y="40" width="52" height="10" rx="5" fill="#8e44ad"/>
+    <circle cx="24" cy="36" r="10" fill="#fff8e1"/>
+    <circle cx="40" cy="30" r="12" fill="#fffde7"/>
+    <circle cx="56" cy="36" r="10" fill="#fff8e1"/>
+    <circle cx="32" cy="22" r="9"  fill="#fffde7"/>
+    <circle cx="48" cy="22" r="9"  fill="#fff3cd"/>
+    <circle cx="40" cy="14" r="8"  fill="#fffde7"/>
+  </svg>
+
+  <!-- 🎟 Ticket 2 (vertical) -->
+  <svg class="floaty f5" viewBox="0 0 48 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="2" width="44" height="96" rx="8" fill="#1a1a2e" stroke="#ff4d6d" stroke-width="2"/>
+    <circle cx="24" cy="30" r="7" fill="#0a0a0f"/>
+    <line x1="8" y1="30" x2="40" y2="30" stroke="#ff4d6d" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <rect x="10" y="42" width="28" height="5" rx="2" fill="#ff4d6d" opacity=".8"/>
+    <rect x="10" y="52" width="20" height="4" rx="2" fill="#6b6b80"/>
+    <rect x="10" y="60" width="14" height="4" rx="2" fill="#6b6b80"/>
+    <!-- barcode lines -->
+    <rect x="10" y="74" width="2" height="16" fill="#6b6b80"/>
+    <rect x="14" y="74" width="3" height="16" fill="#6b6b80"/>
+    <rect x="19" y="74" width="2" height="16" fill="#6b6b80"/>
+    <rect x="23" y="74" width="4" height="16" fill="#6b6b80"/>
+    <rect x="29" y="74" width="2" height="16" fill="#6b6b80"/>
+    <rect x="33" y="74" width="3" height="16" fill="#6b6b80"/>
+  </svg>
+
+  <!-- 🥤 Cola 2 (small) -->
+  <svg class="floaty f6" viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="34" y="0" width="5" height="38" rx="2.5" fill="#f0c040"/>
+    <path d="M8 30 L14 92 Q15 97 20 97 L40 97 Q45 97 46 92 L52 30 Z" fill="#0d1b2e" stroke="#f0c040" stroke-width="1.5"/>
+    <path d="M10 30 L15 85 Q16 90 20 90 L24 90 L18 30 Z" fill="white" opacity=".07"/>
+    <path d="M5 28 Q5 22 30 22 Q55 22 55 28 L52 30 Q52 34 30 34 Q8 34 8 30 Z" fill="#1c2c44"/>
+    <ellipse cx="30" cy="23" rx="25" ry="5" fill="#243350"/>
+    <ellipse cx="35" cy="23" rx="4" ry="2" fill="#0d1b2e"/>
+    <text x="16" y="68" font-size="12" font-weight="bold" fill="#ff4d6d" font-family="serif">★</text>
+    <circle cx="20" cy="52" r="2" fill="#f0c040" opacity=".25"/>
+    <circle cx="38" cy="44" r="1.5" fill="#f0c040" opacity=".2"/>
+  </svg>
+
+  <!-- 🎟 Ticket 3 (tiny accent) -->
+  <svg class="floaty f7" viewBox="0 0 100 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="2" width="96" height="44" rx="8" fill="#0d1b2e" stroke="#6c35de" stroke-width="2"/>
+    <circle cx="28" cy="24" r="7" fill="#0a0a0f"/>
+    <line x1="28" y1="8" x2="28" y2="40" stroke="#6c35de" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <rect x="38" y="13" width="40" height="5" rx="2" fill="#6c35de" opacity=".9"/>
+    <rect x="38" y="23" width="28" height="4" rx="2" fill="#444466"/>
+    <rect x="38" y="31" width="20" height="4" rx="2" fill="#444466"/>
+  </svg>
+
+  <!-- 🍿 Popcorn 3 (accent yellow bucket) -->
+  <svg class="floaty f8" viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="18" y="44" width="44" height="48" rx="5" fill="#f0c040"/>
+    <rect x="18" y="44" width="14" height="48" rx="5" fill="#d4a820"/>
+    <rect x="32" y="44" width="15" height="48" fill="#e8b530"/>
+    <rect x="47" y="44" width="15" height="48" rx="5" fill="#f0c040"/>
+    <rect x="14" y="40" width="52" height="10" rx="5" fill="#ffe066"/>
+    <circle cx="24" cy="36" r="10" fill="#fff8e1"/>
+    <circle cx="40" cy="30" r="12" fill="#fffde7"/>
+    <circle cx="56" cy="36" r="10" fill="#fff8e1"/>
+    <circle cx="32" cy="22" r="9"  fill="#fffde7"/>
+    <circle cx="48" cy="22" r="9"  fill="#fff3cd"/>
+    <circle cx="40" cy="14" r="8"  fill="#fffde7"/>
+  </svg>
+
+  <!-- 🥤 Cola 3 (pink straw) -->
+  <svg class="floaty f9" viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="36" y="0" width="5" height="40" rx="2.5" fill="#ff4d6d"/>
+    <rect x="37" y="0" width="2" height="40" rx="1" fill="#ff8099" opacity=".5"/>
+    <path d="M8 30 L14 92 Q15 97 20 97 L40 97 Q45 97 46 92 L52 30 Z" fill="#1a0d2e" stroke="#6c35de" stroke-width="1.5"/>
+    <path d="M10 30 L15 85 L19 30 Z" fill="white" opacity=".06"/>
+    <path d="M5 28 Q5 22 30 22 Q55 22 55 28 L52 30 Q52 34 30 34 Q8 34 8 30 Z" fill="#2a1a44"/>
+    <ellipse cx="30" cy="23" rx="25" ry="5" fill="#3a1a55"/>
+    <ellipse cx="37" cy="23" rx="4" ry="2" fill="#1a0d2e"/>
+    <text x="14" y="66" font-size="10" font-weight="bold" fill="#6c35de" font-family="serif">TW</text>
+  </svg>
+
+  <!-- 🎟 Ticket 4 (gold, floating bottom-center) -->
+  <svg class="floaty f10" viewBox="0 0 100 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="2" width="96" height="44" rx="8" fill="#1a1400" stroke="#f0c040" stroke-width="2.5"/>
+    <circle cx="28" cy="24" r="7" fill="#0a0a0f"/>
+    <line x1="28" y1="8" x2="28" y2="40" stroke="#f0c040" stroke-width="1.5" stroke-dasharray="4 3"/>
+    <rect x="38" y="12" width="44" height="6" rx="3" fill="#f0c040"/>
+    <rect x="38" y="23" width="30" height="4" rx="2" fill="#a08020" opacity=".7"/>
+    <rect x="38" y="31" width="22" height="4" rx="2" fill="#a08020" opacity=".7"/>
+    <text x="8" y="29" font-size="15" fill="#f0c040">🎵</text>
+  </svg>
+
+</div>
+<!-- ── /Floating Objects ── -->
+
+<div class="page">
+
+  <!-- ── Left: Branding ── -->
+  <div class="brand-panel">
+    <div class="brand-logo">Ticket<span>Wave</span></div>
+
+    <div class="brand-hero">
+      <div class="brand-tag">Live Now</div>
+      <h1 class="brand-headline">
+        DAPATKAN<br>
+        KURSI<br>
+        <em>TERBAIK</em>
+      </h1>
+      <p class="brand-desc">
+        Platform tiket konser paling cepat dan aman.
+        Sistem <em style="color:var(--accent);font-style:normal">Seat Locking</em> real-time kami
+        memastikan tidak ada double-booking.
+      </p>
+      <div class="brand-stats">
+        <div class="stat">
+          <span class="stat-num">12<span>K+</span></span>
+          <span class="stat-label">Tiket Terjual</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">48<span>+</span></span>
+          <span class="stat-label">Event Aktif</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">99<span>%</span></span>
+          <span class="stat-label">Uptime</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="deco-ticket"></div>
+    <div class="brand-footer">© 2025 TicketWave. All rights reserved.</div>
+  </div>
+
+  <!-- ── Right: Auth Form ── -->
+  <div class="form-panel">
+    <div class="form-card">
+
+      <div class="form-header">
+        <div class="brand-logo" style="font-size:1.4rem;margin-bottom:16px">Ticket<span>Wave</span></div>
+        <h2 class="form-title" id="form-title">SELAMAT DATANG</h2>
+        <p class="form-subtitle" id="form-subtitle">Masuk untuk melanjutkan ke platform.</p>
+      </div>
+
+      <!-- Tab Switcher -->
+      <div class="tab-switcher">
+        <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Masuk</button>
+        <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Daftar</button>
+      </div>
+
+      <!-- ── LOGIN FORM ── -->
+      <div class="form-view active" id="view-login">
+        <div class="field" id="f-email-login">
+          <label>Email</label>
+          <div class="input-wrap">
+            <input type="email" id="login-email" placeholder="nama@email.com" autocomplete="email" />
+            <span class="icon">✉</span>
+          </div>
+          <span class="field-error">Masukkan email yang valid.</span>
+        </div>
+
+        <div class="field" id="f-pw-login">
+          <label>Password</label>
+          <div class="input-wrap">
+            <input type="password" id="login-pw" placeholder="••••••••" autocomplete="current-password" />
+            <span class="icon">🔒</span>
+            <button class="toggle-pw" type="button" onclick="togglePw('login-pw',this)">👁</button>
+          </div>
+          <span class="field-error">Password wajib diisi.</span>
+        </div>
+
+        <button class="btn-submit" id="btn-login" onclick="handleLogin()">
+          <span class="btn-text">Masuk →</span>
+          <div class="btn-spinner"></div>
+        </button>
+
+        <div class="divider">atau</div>
+
+        <p style="text-align:center;font-size:.85rem;color:var(--muted)">
+          Belum punya akun?
+          <a href="#" onclick="switchTab('register')" style="color:var(--accent);font-weight:600;text-decoration:none">Daftar Sekarang</a>
+        </p>
+      </div>
+
+      <!-- ── REGISTER FORM ── -->
+      <div class="form-view" id="view-register">
+        <div class="field" id="f-name">
+          <label>Nama Lengkap</label>
+          <div class="input-wrap">
+            <input type="text" id="reg-name" placeholder="John Doe" autocomplete="name" />
+            <span class="icon">👤</span>
+          </div>
+          <span class="field-error">Nama minimal 3 karakter.</span>
+        </div>
+
+        <div class="field" id="f-email-reg">
+          <label>Email</label>
+          <div class="input-wrap">
+            <input type="email" id="reg-email" placeholder="nama@email.com" autocomplete="email" />
+            <span class="icon">✉</span>
+          </div>
+          <span class="field-error">Masukkan email yang valid.</span>
+        </div>
+
+        <div class="field" id="f-pw-reg">
+          <label>Password</label>
+          <div class="input-wrap">
+            <input type="password" id="reg-pw" placeholder="Min. 8 karakter" autocomplete="new-password" />
+            <span class="icon">🔒</span>
+            <button class="toggle-pw" type="button" onclick="togglePw('reg-pw',this)">👁</button>
+          </div>
+          <span class="field-error">Password minimal 8 karakter.</span>
+        </div>
+
+        <div class="field" id="f-pw-confirm">
+          <label>Konfirmasi Password</label>
+          <div class="input-wrap">
+            <input type="password" id="reg-pw2" placeholder="Ulangi password" autocomplete="new-password" />
+            <span class="icon">🔒</span>
+            <button class="toggle-pw" type="button" onclick="togglePw('reg-pw2',this)">👁</button>
+          </div>
+          <span class="field-error">Password tidak cocok.</span>
+        </div>
+
+        <button class="btn-submit" id="btn-register" onclick="handleRegister()">
+          <span class="btn-text">Buat Akun →</span>
+          <div class="btn-spinner"></div>
+        </button>
+
+        <div class="divider">atau</div>
+
+        <p style="text-align:center;font-size:.85rem;color:var(--muted)">
+          Sudah punya akun?
+          <a href="#" onclick="switchTab('login')" style="color:var(--accent);font-weight:600;text-decoration:none">Masuk</a>
+        </p>
+      </div>
+
+    </div><!-- /form-card -->
+  </div><!-- /form-panel -->
+
+</div><!-- /page -->
+
+<div id="toast"></div>
+
+<script>
+  /* ── Tab Switch ── */
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.form-view').forEach(v => v.classList.remove('active'));
+
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('view-' + tab).classList.add('active');
+
+    const titleEl = document.getElementById('form-title');
+    const subEl   = document.getElementById('form-subtitle');
+    if (tab === 'login') {
+      titleEl.textContent = 'SELAMAT DATANG';
+      subEl.textContent   = 'Masuk untuk melanjutkan ke platform.';
+    } else {
+      titleEl.textContent = 'BUAT AKUN';
+      subEl.textContent   = 'Daftar gratis dan mulai berburu tiket.';
+    }
+    clearErrors();
+  }
+
+  /* ── Toggle Password ── */
+  function togglePw(id, btn) {
+    const inp = document.getElementById(id);
+    if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+    else { inp.type = 'password'; btn.textContent = '👁'; }
+  }
+
+  /* ── Validation Helpers ── */
+  function setError(fieldId, msg) {
+    const f = document.getElementById(fieldId);
+    f.classList.add('has-error');
+    if (msg) f.querySelector('.field-error').textContent = msg;
+  }
+  function clearError(fieldId) {
+    document.getElementById(fieldId)?.classList.remove('has-error');
+  }
+  function clearErrors() {
+    document.querySelectorAll('.field').forEach(f => f.classList.remove('has-error'));
+  }
+  function isEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+  /* ── Toast ── */
+  let toastTimer;
+  function showToast(msg, type = '') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className   = 'show ' + type;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { t.className = ''; }, 3500);
+  }
+
+  /* ── Loading State ── */
+  function setLoading(btnId, on) {
+    document.getElementById(btnId).classList.toggle('loading', on);
+  }
+
+  /* ── API Call Helper ── */
+  async function apiCall(url, body) {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',          // <-- kirim/terima Cookie JWT
+      body: JSON.stringify(body)
+    });
+    const data = await res.json().catch(() => ({}));
+    return { ok: res.ok, status: res.status, data };
+  }
+
+  /* ── Handle Login ── */
+  async function handleLogin() {
+    clearErrors();
+    const email = document.getElementById('login-email').value.trim();
+    const pw    = document.getElementById('login-pw').value;
+
+    let valid = true;
+    if (!isEmail(email)) { setError('f-email-login'); valid = false; }
+    if (!pw)              { setError('f-pw-login');    valid = false; }
+    if (!valid) return;
+
+    setLoading('btn-login', true);
+
+    try {
+      // ── Ganti URL sesuai backend Golang Anda ──
+      const { ok, data } = await apiCall('/api/auth/login', { email, password: pw });
+
+      if (ok) {
+        showToast('✅ Login berhasil! Mengalihkan...', 'success');
+        setTimeout(() => { window.location.href = '/home.html'; }, 1200);
+      } else {
+        showToast('❌ ' + (data.message || 'Email atau password salah.'), 'error');
+      }
+    } catch (err) {
+      showToast('⚠️ Tidak dapat terhubung ke server.', 'error');
+    } finally {
+      setLoading('btn-login', false);
+    }
+  }
+
+  /* ── Handle Register ── */
+  async function handleRegister() {
+    clearErrors();
+    const name  = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const pw    = document.getElementById('reg-pw').value;
+    const pw2   = document.getElementById('reg-pw2').value;
+
+    let valid = true;
+    if (name.length < 3)  { setError('f-name');       valid = false; }
+    if (!isEmail(email))  { setError('f-email-reg');   valid = false; }
+    if (pw.length < 8)    { setError('f-pw-reg');      valid = false; }
+    if (pw !== pw2)       { setError('f-pw-confirm', 'Password tidak cocok.'); valid = false; }
+    if (!valid) return;
+
+    setLoading('btn-register', true);
+
+    try {
+      // ── Ganti URL sesuai backend Golang Anda ──
+      const { ok, data } = await apiCall('/api/auth/register', { name, email, password: pw });
+
+      if (ok) {
+        showToast('🎉 Akun berhasil dibuat! Silakan login.', 'success');
+        setTimeout(() => switchTab('login'), 1500);
+      } else {
+        showToast('❌ ' + (data.message || 'Registrasi gagal.'), 'error');
+      }
+    } catch (err) {
+      showToast('⚠️ Tidak dapat terhubung ke server.', 'error');
+    } finally {
+      setLoading('btn-register', false);
+    }
+  }
+
+  /* ── Enter key support ── */
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const loginActive = document.getElementById('view-login').classList.contains('active');
+    if (loginActive) handleLogin(); else handleRegister();
+  });
+</script>
+</body>
+</html>
